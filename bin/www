@@ -16,13 +16,13 @@ var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP server. Listen on provided port, on all network interfaces.
  */
 
 var server = http.createServer(app).listen(port);
 
 /**
- * Listen on provided port, on all network interfaces.
+ * socket io control module injection
  */
 
 var io = require('../control/socket_module')(server);
