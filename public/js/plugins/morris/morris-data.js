@@ -25,26 +25,43 @@ var chartControl = {
             illumination: i,
             noise : n    		
     	});
+
+    	console.log(this.MorrisAreaData.data.length);
+    	var size = this.MorrisAreaData.data.length;    	
+    	if (size > 100) this.MorrisAreaData.data.splice(0,1);
     	this.chart.setData(this.MorrisAreaData.data);
     }
 };      
 
-var socket = io();
-
-$(document).ready(function(socket) {
+$(document).ready(function() {
+	var socket = io('http://localhost:3000/');
+	
     chartControl.init();
-    chartControl.addData(26, 40, 50, 20);
-    console.log(chartControl);
-    chartControl.addData(27, 45, 40, 30);
 
-	$('#send').click(function(){
-		socket.emit('requestData', $('#m').val());
-		$('#m').val('');
+	$('#btnGetData').click(function(){
+		socket.emit('requestData', 'get sensor data');
 		return false;
 	});
+	
 	socket.on('responseData', function(msg){
-		$('#messages').append($('<li>').text(msg));
+		console.log(msg);
+		var t = Math.floor((Math.random() * 40) + 1);
+		var h = Math.floor((Math.random() * 100) + 1);
+		var i = Math.floor((Math.random() * 150) + 1);
+		var n = Math.floor((Math.random() * 150) + 1);
+		$("#lbTemperature").text(t);
+		$("#lbHumidity").text(h);
+		$("#lbIllumination").text(i);
+		$("#lbNoise").text(n);
+		chartControl.addData(t,h,i,n);
 	});
+	
+	socket.on('responseControl', function(msg){
+		$('#messages').append($('<li>').text(msg));
+	});	
+	
+	// 최초 센서 정보 획득
+	socket.emit('requestData', 'get sensor data');
 });
 
 /*
