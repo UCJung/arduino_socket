@@ -12,7 +12,7 @@ module.exports = function(server) {
 	return io;
 } 
 
-function socketListener(io, server)
+function socketListener(io, server, serialPort)
 {
 	io.sockets.on('connection', function(socket){
 		// process arduino request data message to serial port
@@ -21,7 +21,7 @@ function socketListener(io, server)
 			serialPort.write(msg, function(err, result) {
 				console.log('err ' + err);
 				console.log('result ' + result);
-				io.emit('responseData', err + '/' + reuslt);
+				io.emit('responseData', '' + result);
 			});
 		});
 		
@@ -31,7 +31,7 @@ function socketListener(io, server)
 			serialPort.write(msg, function(err, result) {
 				console.log('err ' + err);
 				console.log('result ' + result);
-				io.emit('responseControl', err + '/' + reuslt);
+				io.emit('responseControl', 'result ' + result);
 			});
 		});	  
 	});	
